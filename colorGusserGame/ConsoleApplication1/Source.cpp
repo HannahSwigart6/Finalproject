@@ -18,7 +18,7 @@
 #include <sstream>
 #include "math.h"
 
-int colorNum, wordNum, score, play;
+int colorNum, wordNum, score, play highest = 0;
 int scoresHigh[10], oldSubscript[10], newSubscript[10];
 std::string nameHigh[10];
 bool gameOver;
@@ -93,6 +93,9 @@ int checker(std::string ColorWord, std::string name){
 		++score;
 	}
 	else{ //else clause that runs if the word does not equal
+		if (score > highest){ // displays highest score
+			highest = score;
+		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //same thing as above
 		std::cout << "too bad " << name << " you lost!" << std::endl;
 		std::cout << "The word you were supposed to type was " << ColorWord << std::endl;
