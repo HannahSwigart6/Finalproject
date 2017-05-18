@@ -19,7 +19,7 @@
 #include "math.h"
 
 int colorNum, wordNum, score, play;
-int scoresHigh[10];
+int scoresHigh[10], oldSubscript[10], newSubscript[10];
 std::string nameHigh[10];
 bool gameOver;
 
@@ -129,6 +129,9 @@ void ImportScore(){
 	std::ifstream file("highscoreScores.txt"); //makes the file
 	if (file.is_open()){ //opens file
 		while (!file.eof()){
+			for (int i = 0; i < 11; ++i)
+				oldSubscript[i];
+			std::cout << oldSubscript << std::endl;
 			file >> scoresHigh[n];
 			n++;
 		}
@@ -182,9 +185,13 @@ void ExportScore(int score, std::string name){
 //this just lists the highscores from top to bottom
 void Highscores(){
 	std::cout << "Here are some scores set by people" << std::endl;
-	for (int i = 0; i < 10; i++){
+	for (int i = 0; i < 11; i++){
 		std::cout << i << ". " << nameHigh[i] << " set a score of " << scoresHigh[i] << std::endl;
 	}
+}
+
+void Sorter(){
+
 }
 
 //runs the game
