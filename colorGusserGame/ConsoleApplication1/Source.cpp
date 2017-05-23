@@ -14,14 +14,13 @@
 #include <deque>
 #include <algorithm>
 #include <iterator>
-#include <vector>
 #include <sstream>
 #include "math.h"
 
-int colorNum, wordNum, score, play highest = 0;
-int scoresHigh[10], oldSubscript[10], newSubscript[10];
+int colorNum, wordNum, score, play, highest = 0, n = 0, seconds = 0;
+int scoresHigh[10];
 std::string nameHigh[10];
-bool gameOver;
+bool gameOver = false;
 
 //this are the menu, just displays a menu and asks for input
 int Menu(){
@@ -44,11 +43,6 @@ std::string Name(){
 	std::cout << "What is your name? ";
 	std::cin >> name;
 	return name;
-}
-
-//this will setup the game and initialize some variables
-void setup(){
-	gameOver = false;
 }
 
 //picks the color between 1 and 5 "randomly" for the SetConsoleTextAttribute function
@@ -87,6 +81,28 @@ int checker(std::string ColorWord, std::string name){
 	std::string input, again;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //sets the user input text color to white for less confusion
 	std::cin >> input;
+	if (seconds > 4){
+		std::cout << "You ran out of time" << std::endl;
+		if (score > highest){ // displays highest score
+			highest = score;
+		}
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //same thing as above
+		std::cout << "Your highest score is " << highest << std::endl;
+		std::cout << "too bad " << name << " you lost!" << std::endl;
+		std::cout << "The word you were supposed to type was " << ColorWord << std::endl;
+		std::cout << "your score was " << score << std::endl;
+		std::cout << "Would you like to play again? ";
+		std::cin >> again;
+		//if statment either ending the game or restarting it
+		if (again == "yes" || again == "Y" || again == "Yes"){
+			score = 0;
+			!gameOver;
+		}
+		else{
+			std::cout << " " << std::endl;
+			gameOver;
+		}
+	}
 	if (input == ColorWord){
 		std::cout << " " << std::endl;
 		std::cout << " " << std::endl;
@@ -97,6 +113,7 @@ int checker(std::string ColorWord, std::string name){
 			highest = score;
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); //same thing as above
+		std::cout << "Your highest score is " << highest << std::endl;
 		std::cout << "too bad " << name << " you lost!" << std::endl;
 		std::cout << "The word you were supposed to type was " << ColorWord << std::endl;
 		std::cout << "your score was " << score << std::endl;
@@ -105,11 +122,11 @@ int checker(std::string ColorWord, std::string name){
 		//if statment either ending the game or restarting it
 		if (again == "yes" || again == "Y" || again == "Yes"){
 			score = 0;
-			gameOver = false;
+			!gameOver;
 		}
 		else{
 			std::cout << " " << std::endl;
-			gameOver = true;
+			gameOver;
 		}
 	}
 	return score;
@@ -122,19 +139,17 @@ void textMaker(std::string word){
 		std::cout << "your score is " << score << std::endl;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorNum); //this sets the color of the text to the word decided from the array
 		std::cout << word << std::endl;
+		Sleep(1000);
+		system("cls");
 	} while (gameOver = false);
 }
 
 //Should Import info
 void ImportScore(){
 	std::string line, stringScores;
-	int n = 0;
 	std::ifstream file("highscoreScores.txt"); //makes the file
 	if (file.is_open()){ //opens file
 		while (!file.eof()){
-			for (int i = 0; i < 11; ++i)
-				oldSubscript[i];
-			std::cout << oldSubscript << std::endl;
 			file >> scoresHigh[n];
 			n++;
 		}
@@ -163,6 +178,8 @@ void ExportScore(int score, std::string name){
 	if (score > scoresHigh[0]){
 
 	}
+
+	//for scores
 	std::ofstream highScore("highscoreScores.txt", std::ios_base::app | std::ios_base::out);//makes the name of file and where to export the info
 	if (highScore.is_open()){
 		highScore  << score << '\n'; //this writes to the file
@@ -173,6 +190,7 @@ void ExportScore(int score, std::string name){
 	}
 		highScore.close(); //closes the file
 
+	//for names
 	std::ofstream highName("highscoreName.txt", std::ios_base::app | std::ios_base::out);//makes the name of file and where to export the info
 	if (highName.is_open()){
 		highName << name << '\n'; //this writes to the file
@@ -182,6 +200,7 @@ void ExportScore(int score, std::string name){
 		std::cout << "Something went wrong with writing to the file!"; //else statment to see if it works, and it does.
 	}
 	highScore.close(); //closes the file
+	highName.close();
 }
 
 
@@ -191,10 +210,6 @@ void Highscores(){
 	for (int i = 0; i < 11; i++){
 		std::cout << i << ". " << nameHigh[i] << " set a score of " << scoresHigh[i] << std::endl;
 	}
-}
-
-void Sorter(){
-
 }
 
 //runs the game
@@ -211,7 +226,6 @@ int main(){
 		} while (play == 2); //sets the one way flag for playing
 	}
 	if (play == 1){//if statement for the do-while loop
-		setup();
 		do{ //do while loop that runs the game.
 			colorCode = ColorCode();
 			colorWord = ColorWord();
